@@ -299,7 +299,7 @@ class ControllerModuleLog extends Controller {
 
         foreach ($results as $result) {
             $data['logs'][] = array(
-                'log_id' => $result['logt_id'],
+                'log_id' => $result['log_id'],
                 'event'       => $result['event'],
                 'data'       => $result['data'],
                 'user'       => $this->model_user_user->getUser($result['user_id']),
