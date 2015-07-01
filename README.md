@@ -1,6 +1,8 @@
 # opencart-log
 Log all admin actions by event
 
+This module register the data from all events triggered in admin area.
+
 Installation
 ============
 
