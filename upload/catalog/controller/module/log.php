@@ -63,7 +63,7 @@ class ControllerModuleLog extends Controller {
 
                 $log_data['event'] = trim($event_desc);
                 $log_data['data'] = json_encode($args);
-                $log_data['user_id'] = $this->session->data['api_id'];
+                $log_data['user_id'] = isset($this->session->data['api_id']) ? $this->session->data['api_id'] : '';
 
                 $this->model_module_log->addLog($log_data);
                 break;
