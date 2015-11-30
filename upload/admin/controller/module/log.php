@@ -151,51 +151,20 @@ class ControllerModuleLog extends Controller {
         'pre.order.delete',
         'post.order.delete',
         'pre.order.history.add',
-        'post.order.history.add',
-
-        'pre.admin.ia_artist.add',
-        'post.admin.ia_artist.add',
-        'pre.admin.ia_artist.edit',
-        'post.admin.ia_artist.edit',
-        'pre.admin.ia_artist.delete',
-        'post.admin.ia_artist.delete',
-        'pre.admin.ia_event.add',
-        'post.admin.ia_event.add',
-        'pre.admin.ia_event.edit',
-        'post.admin.ia_event.edit',
-        'pre.admin.ia_event.delete',
-        'post.admin.ia_event.delete',
-        'pre.admin.ia_company.add',
-        'post.admin.ia_company.add',
-        'pre.admin.ia_company.edit',
-        'post.admin.ia_company.edit',
-        'pre.admin.ia_company.delete',
-        'post.admin.ia_company.delete',
-        'pre.admin.ia_ticket.add',
-        'post.admin.ia_ticket.add',
-        'pre.admin.ia_ticket.edit',
-        'post.admin.ia_ticket.edit',
-        'pre.admin.ia_ticket.delete',
-        'post.admin.ia_ticket.delete',
-        'pre.admin.ia_ticket.type.add',
-        'post.admin.ia_ticket.type.add',
-        'pre.admin.ia_ticket.type.edit',
-        'post.admin.ia_ticket.type.edit',
-        'pre.admin.ia_ticket.type.delete',
-        'post.admin.ia_ticket.type.delete',
+        'post.order.history.add'
     );
 
-	public function index() {
-		$this->load->language('module/log');
+    public function index() {
+        $this->load->language('module/log');
 
         $this->document->setTitle($this->language->get('heading_title'));
         $this->document->addStyle('view/javascript/jquery/json-viewer/jquery.json-viewer.css');
         $this->document->addScript('view/javascript/jquery/json-viewer/jquery.json-viewer.js');
 
-		$this->load->model('module/log');
+        $this->load->model('module/log');
 
-		$this->getList();
-	}
+        $this->getList();
+    }
 
     protected function getList() {
         if (isset($this->request->get['filter_event'])) {
@@ -280,9 +249,9 @@ class ControllerModuleLog extends Controller {
         $data['logs'] = array();
 
         $filter_data = array(
-            'filter_event'	  => $filter_event,
-            'filter_user_id'	  => $filter_user_id,
-            'filter_date_added'	  => $filter_date_added,
+            'filter_event'    => $filter_event,
+            'filter_user_id'      => $filter_user_id,
+            'filter_date_added'   => $filter_date_added,
             'sort'            => $sort,
             'order'           => $order,
             'start'           => ($page - 1) * $this->config->get('config_limit_admin'),
@@ -311,6 +280,12 @@ class ControllerModuleLog extends Controller {
 
         $data['text_list'] = $this->language->get('text_list');
         $data['text_no_results'] = $this->language->get('text_no_results');
+        $data['text_clear'] = $this->language->get('text_clear');
+        $data['text_confirm'] = $this->language->get('text_confirm');
+        $data['text_config'] = $this->language->get('text_config');
+        $data['text_close'] = $this->language->get('text_close');
+        $data['text_config_success'] = $this->language->get('text_config_success');
+        $data['text_clear_success'] = $this->language->get('text_clear_success');
 
         $data['column_event'] = $this->language->get('column_event');
         $data['column_user'] = $this->language->get('column_user');
@@ -322,6 +297,15 @@ class ControllerModuleLog extends Controller {
         $data['entry_date_added'] = $this->language->get('entry_date_added');
 
         $data['button_filter'] = $this->language->get('button_filter');
+
+        if ($this->request->server['HTTPS']) {
+            $ssl = 'SSL';
+        } else {
+            $ssl = null;
+        }
+
+        $data['action_clear'] = $this->url->link('module/log/clear', 'token='. $this->session->data['token'], $ssl);
+        $data['action_config'] = $this->url->link('module/log/config', 'token='. $this->session->data['token'], $ssl);
 
         $data['token'] = $this->session->data['token'];
 
@@ -391,11 +375,39 @@ class ControllerModuleLog extends Controller {
         $data['sort'] = $sort;
         $data['order'] = $order;
 
+        $data['events'] = $this->events;
+        $data['active_events'] = $this->model_module_log->getActiveEvents();
+
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');
 
         $this->response->setOutput($this->load->view('module/log_list.tpl', $data));
+    }
+
+    public function config() {
+        $this->load->model('extension/event');
+
+        $this->model_extension_event->deleteEvent('log');
+
+        if(isset($this->request->post['action']) && is_array($this->request->post['action'])) {
+
+            foreach($this->request->post['action'] as $action) {
+                if(in_array($action, $this->events)) {
+                    $this->model_extension_event->addEvent('log', $action, 'module/log/' . str_replace('.', '_', $action));
+                }
+            }
+
+        }
+
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode(array('success' => true)));
+    }
+
+    public function clear() {
+        $this->load->model('module/log');
+
+        $this->model_module_log->clear();
     }
 
     public function __call($method, $args) {

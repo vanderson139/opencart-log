@@ -74,4 +74,22 @@ class ModelModuleLog extends Model {
 
         return $query->row['total'];
     }
+
+    public function getActiveEvents() {
+        $active_events = array();
+
+        $query = $this->db->query("SELECT `trigger` FROM " . DB_PREFIX . "event WHERE `code` = 'log'");
+
+        if($query->num_rows) {
+            foreach($query->rows as $row) {
+                $active_events[] = $row['trigger'];
+            }
+        }
+
+        return $active_events;
+    }
+
+    public function clear() {
+        return $this->db->query("TRUNCATE TABLE " . DB_PREFIX . "log");
+    }
 }

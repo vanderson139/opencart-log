@@ -72,7 +72,7 @@
                 <?php foreach ($logs as $key => $log) { ?>
                 <tr>
                   <td class="text-left"><?php echo $log['event']; ?></td>
-                  <td class="text-left"><?php echo $log['user']['username']; ?></td>
+                  <td class="text-left"><?php echo isset($log['user']['username']) ? $log['user']['username'] : 'api'; ?></td>
                   <td class="text-left"><?php echo $log['date_added']; ?></td>
                   <td class="text-right">
                       <!-- Button trigger modal -->
@@ -142,6 +142,6 @@ $('.date').datetimepicker({
   pickDate: true,
   pickTime: false
 });
-//--></script> 
+//--></script>
   </div>
 <?php echo $footer; ?>
