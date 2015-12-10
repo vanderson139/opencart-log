@@ -2,6 +2,90 @@
 <div id="content">
   <div class="page-header">
     <div class="container-fluid">
+        <div class="pull-right">
+            <a id="log-config" data-toggle="modal" data-target="#log-config-modal" title="<?php echo $text_config; ?>" class="btn btn-default"><i class="fa fa-cog"></i></a>
+            <a id="log-clear" data-toggle="tooltip" title="<?php echo $text_clear; ?>" class="btn btn-danger"><i class="fa fa-trash-o"></i></a>
+
+            <!-- Modal -->
+            <div class="modal fade" id="log-config-modal" tabindex="-1" role="log" aria-labelledby="log-config-modal-label">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="<?php echo $text_close; ?>"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="log-config-modal-label"><?php echo $text_config; ?></h4>
+
+                            <form id="log-config-form" name="log-config-form">
+                                <?php $actions1 = array_slice($events, 0, 49); ?>
+                                <?php $actions2 = array_slice($events, 50, 49); ?>
+                                <?php $actions3 = array_slice($events, 100); ?>
+
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <?php foreach($actions1 as $event) {
+                                            $event_arr = explode('.', $event);
+                                            $event_desc = '';
+
+                                            foreach($event_arr as $arr) {
+                                                $event_desc .= ucfirst($arr) . ' ';
+                                            }
+                                        ?>
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="checkbox pull-left">
+                                                    <label><input type="checkbox" name="action[]" value="<?php echo $event; ?>" id="event-<?php echo $event; ?>" <?php echo in_array($event, $active_events) ? 'checked="checked"' : ''?>> <?php echo $event_desc; ?></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <?php foreach($actions2 as $event) {
+                                            $event_arr = explode('.', $event);
+                                            $event_desc = '';
+
+                                            foreach($event_arr as $arr) {
+                                                $event_desc .= ucfirst($arr) . ' ';
+                                            }
+                                        ?>
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="checkbox pull-left">
+                                                    <label><input type="checkbox" name="action[]" value="<?php echo $event; ?>" id="event-<?php echo $event; ?>" <?php echo in_array($event, $active_events) ? 'checked="checked"' : ''?>> <?php echo $event_desc; ?></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <?php foreach($actions3 as $event) {
+                                            $event_arr = explode('.', $event);
+                                            $event_desc = '';
+
+                                            foreach($event_arr as $arr) {
+                                                $event_desc .= ucfirst($arr) . ' ';
+                                            }
+                                        ?>
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="checkbox pull-left">
+                                                    <label><input type="checkbox" name="action[]" value="<?php echo $event; ?>" id="event-<?php echo $event; ?>" <?php echo in_array($event, $active_events) ? 'checked="checked"' : ''?>> <?php echo $event_desc; ?></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-body"></div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" form="log-config-form">Save</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo $text_close; ?></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
       <h1><?php echo $heading_title; ?></h1>
       <ul class="breadcrumb">
         <?php foreach ($breadcrumbs as $breadcrumb) { ?>
@@ -84,12 +168,12 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="<?php echo $text_close; ?>"><span aria-hidden="true">&times;</span></button>
                                 <h4 class="modal-title" id="log-<?php echo $key; ?>-label"><?php echo $log['event']; ?><br/><?php echo $log['date_added']; ?></h4>
                             </div>
                             <div class="modal-body"></div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo $text_close; ?></button>
                             </div>
                         </div>
                     </div>
@@ -115,13 +199,13 @@
   </div>
   <script type="text/javascript"><!--
 $('#button-filter').on('click', function() {
-	var url = 'index.php?route=module/log&token=<?php echo $token; ?>';
+    var url = 'index.php?route=module/log&token=<?php echo $token; ?>';
 
-	var filter_event = $('input[name=\'filter_event\']').val();
+    var filter_event = $('input[name=\'filter_event\']').val();
 
-	if (filter_event) {
-		url += '&filter_event=' + encodeURIComponent(filter_event);
-	}
+    if (filter_event) {
+        url += '&filter_event=' + encodeURIComponent(filter_event);
+    }
 
     var filter_user_id = $('select[name=\'filter_user_id\']').val();
 
@@ -129,13 +213,13 @@ $('#button-filter').on('click', function() {
         url += '&filter_user_id=' + encodeURIComponent(filter_user_id);
     }
 
-	var filter_date_added = $('input[name=\'filter_date_added\']').val();
+    var filter_date_added = $('input[name=\'filter_date_added\']').val();
 
-	if (filter_date_added) {
-		url += '&filter_date_added=' + encodeURIComponent(filter_date_added);
-	}
+    if (filter_date_added) {
+        url += '&filter_date_added=' + encodeURIComponent(filter_date_added);
+    }
 
-	location = url;
+    location = url;
 });
 
 $('.date').datetimepicker({
@@ -143,5 +227,25 @@ $('.date').datetimepicker({
   pickTime: false
 });
 //--></script>
-  </div>
+<script type="text/javascript"><!--
+$('#log-clear').click(function() {
+    if(confirm("<?php echo $text_confirm; ?>")) {
+        $.get("<?php echo $action_clear; ?>", function() {
+            alert("<?php echo $text_clear_success; ?>");
+            window.location.reload();
+        });
+    }
+});
+//--></script>
+<script type="text/javascript"><!--
+    $('#log-config-form').submit(function(event) {
+        event.preventDefault ? event.preventDefault() : event.returnValue = false;
+
+        $.post("<?php echo $action_config; ?>", $("#log-config-form").serialize(), function() {
+            alert("<?php echo $text_config_success; ?>");
+            window.location.reload();
+        });
+    });
+    //--></script>
+</div>
 <?php echo $footer; ?>
